@@ -130,7 +130,9 @@ a { color: inherit; text-decoration: none; }
 .app-card.desabilitado { opacity: 0.5; cursor: default; }
 .app-card.desabilitado:hover { box-shadow: none; transform: none; }
 
-.app-card .icone { font-size: 1.8rem; display: block; margin-bottom: 8px; }
+.app-card .icone { display: flex; justify-content: center; margin-bottom: 10px; color: var(--azul); }
+.app-card .icone svg { width: 28px; height: 28px; }
+.app-card:not(.desabilitado):hover .icone { color: var(--laranja); }
 .app-card .nome { font-weight: 600; font-size: 0.92rem; }
 .app-card .badge-em-construcao {
   display: block;
