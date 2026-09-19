@@ -19,7 +19,7 @@ function renderCampanha(c) {
     <div class="secao" style="margin-bottom:0;padding:14px;" data-id="${c.id}">
       <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
         <div>
-          <strong>${c.nome}</strong>
+          <strong>${escapeHtml(c.nome)}</strong>
           <div class="tarefa-meta" style="margin-top:4px;">
             <span class="tag">${ROTULOS_STATUS_CAMPANHA[c.status]}</span>
             <span class="tag">${ROTULOS_SEGMENTO[c.segmento]}</span>
@@ -27,7 +27,7 @@ function renderCampanha(c) {
           </div>
         </div>
         <div class="tarefa-acoes">
-          ${c.link_principal ? `<a class="btn-icone" href="${c.link_principal}" target="_blank">🔗</a>` : ''}
+          ${c.link_principal ? `<a class="btn-icone" href="${escapeHtml(c.link_principal)}" target="_blank" rel="noopener noreferrer">🔗</a>` : ''}
           <button class="btn-icone" onclick="abrirEdicao(${c.id})">✏️</button>
         </div>
       </div>

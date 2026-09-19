@@ -20,13 +20,13 @@ function renderItem(item, conflitantes) {
   return `
     <div class="tarefa-item ${conflitantes.has(item.id) ? 'atrasada' : ''}" data-id="${item.id}">
       <div class="tarefa-info">
-        <div class="tarefa-titulo">${item.titulo} ${conflitantes.has(item.id) ? '⚠️ conflito' : ''}</div>
+        <div class="tarefa-titulo">${escapeHtml(item.titulo)} ${conflitantes.has(item.id) ? '⚠️ conflito' : ''}</div>
         <div class="tarefa-meta">
           <span class="tag">${ROTULOS_TIPO_AGENDA[item.tipo]}</span>
           <span class="tag">${ROTULOS_SEGMENTO[item.segmento]}</span>
           ${etapaTag}
           <span>📅 ${formatarData(item.data)}${item.hora ? ` às ${item.hora.slice(0, 5)}` : ''}</span>
-          ${item.local ? `<span>📍 ${item.local}</span>` : ''}
+          ${item.local ? `<span>📍 ${escapeHtml(item.local)}</span>` : ''}
           ${item.recorrencia ? `<span>🔁 ${item.recorrencia}</span>` : ''}
         </div>
       </div>

@@ -8,18 +8,18 @@ function renderEvento(e) {
     <div class="secao" style="margin-bottom:0;padding:14px;" data-id="${e.id}">
       <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
         <div>
-          <strong>${e.nome}</strong>
+          <strong>${escapeHtml(e.nome)}</strong>
           <div class="tarefa-meta" style="margin-top:4px;">
             <span class="tag">${ROTULOS_STATUS_EVENTO[e.status]}</span>
             <span class="tag">${ROTULOS_SEGMENTO[e.segmento]}</span>
             ${e.etapa_infantil ? `<span class="tag">${ROTULOS_ETAPA_INFANTIL[e.etapa_infantil]}</span>` : ''}
             ${e.data ? `<span>📅 ${formatarData(e.data)}${e.hora ? ` às ${e.hora.slice(0, 5)}` : ''}</span>` : ''}
-            ${e.local ? `<span>📍 ${e.local}</span>` : ''}
+            ${e.local ? `<span>📍 ${escapeHtml(e.local)}</span>` : ''}
           </div>
           ${etapas.length ? `<div style="margin-top:6px;font-size:0.78rem;color:var(--texto-suave)">Etapas concluídas: ${etapas.join(', ')}</div>` : ''}
         </div>
         <div class="tarefa-acoes">
-          ${e.link_principal ? `<a class="btn-icone" href="${e.link_principal}" target="_blank">🔗</a>` : ''}
+          ${e.link_principal ? `<a class="btn-icone" href="${escapeHtml(e.link_principal)}" target="_blank" rel="noopener noreferrer">🔗</a>` : ''}
           <button class="btn-icone" onclick="abrirEdicao(${e.id})">✏️</button>
         </div>
       </div>

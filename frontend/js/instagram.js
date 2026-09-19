@@ -47,7 +47,7 @@ async function carregarRanking() {
     ? itens.map((it, i) => `
       <div class="tarefa-item">
         <div class="tarefa-info">
-          <div class="tarefa-titulo">#${i + 1} ${it.titulo}</div>
+          <div class="tarefa-titulo">#${i + 1} ${escapeHtml(it.titulo)}</div>
           <div class="tarefa-meta">
             <span class="tag">${NOME_CONTA[it.conta]}</span>
             <span class="tag">${ROTULO_TIPO_IG[it.tipo]}</span>
@@ -56,7 +56,7 @@ async function carregarRanking() {
             <span>👁️ ${it.alcance} alcance</span>
           </div>
         </div>
-        ${it.link ? `<div class="tarefa-acoes"><a class="btn-icone" href="${it.link}" target="_blank">🔗</a></div>` : ''}
+        ${it.link ? `<div class="tarefa-acoes"><a class="btn-icone" href="${escapeHtml(it.link)}" target="_blank" rel="noopener noreferrer">🔗</a></div>` : ''}
       </div>
     `).join('')
     : '<p style="color:var(--texto-suave)">Nenhum conteúdo cadastrado ainda.</p>';

@@ -14,7 +14,7 @@ function renderItemLista(item) {
   return `
     <div class="tarefa-item" data-id="${item.id}">
       <div class="tarefa-info">
-        <div class="tarefa-titulo">${item.titulo}</div>
+        <div class="tarefa-titulo">${escapeHtml(item.titulo)}</div>
         <div class="tarefa-meta">
           <span class="tag">${ROTULOS_ETAPA_CONTEUDO[item.etapa]}</span>
           <span class="tag">${ROTULOS_TIPO_CONTEUDO[item.tipo]}</span>
@@ -23,7 +23,7 @@ function renderItemLista(item) {
         </div>
       </div>
       <div class="tarefa-acoes">
-        ${item.link ? `<a class="btn-icone" href="${item.link}" target="_blank" title="Abrir link">🔗</a>` : ''}
+        ${item.link ? `<a class="btn-icone" href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" title="Abrir link">🔗</a>` : ''}
         <button class="btn-icone" onclick="abrirEdicao(${item.id})" title="Editar">✏️</button>
       </div>
     </div>
@@ -50,7 +50,7 @@ async function carregarConteudos() {
       card.className = 'kanban-card';
       card.draggable = true;
       card.dataset.id = item.id;
-      card.innerHTML = `<strong>${item.titulo}</strong><br><span style="font-size:0.72rem;color:var(--texto-suave)">${ROTULOS_TIPO_CONTEUDO[item.tipo]}</span>`;
+      card.innerHTML = `<strong>${escapeHtml(item.titulo)}</strong><br><span style="font-size:0.72rem;color:var(--texto-suave)">${ROTULOS_TIPO_CONTEUDO[item.tipo]}</span>`;
       card.addEventListener('click', () => abrirEdicao(item.id));
       card.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', item.id));
       col.appendChild(card);

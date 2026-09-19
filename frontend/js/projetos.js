@@ -6,14 +6,14 @@ function renderProjeto(p) {
     <div class="secao" style="margin-bottom:0;padding:14px;" data-id="${p.id}">
       <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
         <div style="flex:1;min-width:200px;">
-          <strong>${p.nome}</strong>
+          <strong>${escapeHtml(p.nome)}</strong>
           <div class="tarefa-meta" style="margin-top:4px;">
             <span class="tag">${ROTULOS_STATUS_PROJETO[p.status]}</span>
             <span class="tag">Prioridade: ${p.prioridade}</span>
             <span class="tag">${ROTULOS_SEGMENTO[p.segmento]}</span>
             ${p.prazo_final ? `<span>📅 até ${formatarData(p.prazo_final)}</span>` : ''}
           </div>
-          ${p.proximo_passo ? `<div style="margin-top:6px;font-size:0.82rem;">➡️ Próximo passo: ${p.proximo_passo}</div>` : ''}
+          ${p.proximo_passo ? `<div style="margin-top:6px;font-size:0.82rem;">➡️ Próximo passo: ${escapeHtml(p.proximo_passo)}</div>` : ''}
         </div>
         <div class="tarefa-acoes"><button class="btn-icone" onclick="abrirEdicao(${p.id})">✏️</button></div>
       </div>
@@ -49,7 +49,7 @@ function renderMilestones() {
   lista.innerHTML = milestones.map((m) => `
     <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;">
       <input type="checkbox" ${m.concluido ? 'checked' : ''} onchange="toggleMilestone(${m.id}, this.checked)">
-      <span style="flex:1;${m.concluido ? 'text-decoration:line-through;color:var(--texto-suave);' : ''}">${m.titulo}</span>
+      <span style="flex:1;${m.concluido ? 'text-decoration:line-through;color:var(--texto-suave);' : ''}">${escapeHtml(m.titulo)}</span>
       <button class="btn-icone" onclick="removerMilestone(${m.id})">✕</button>
     </div>
   `).join('') || '<p style="font-size:0.8rem;color:var(--texto-suave)">Nenhum marco ainda.</p>';

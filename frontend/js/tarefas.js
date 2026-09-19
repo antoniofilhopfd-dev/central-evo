@@ -1,8 +1,4 @@
-const API_BASE = window.location.origin.replace(/:\d+$/, '') + ':3001/api';
-
 const ROTULOS_STATUS = { a_fazer: 'A fazer', em_andamento: 'Em andamento', aguardando: 'Aguardando', concluida: 'Concluída' };
-const ROTULOS_SEGMENTO = { geral: 'Geral', infantil: 'Infantil', anos_iniciais: 'Anos Iniciais', anos_finais: 'Anos Finais', ensino_medio: 'Ensino Médio' };
-const ROTULOS_ETAPA_INFANTIL = { todo_infantil: 'Todo Infantil', maternal: 'Maternal', jardim: 'Jardim' };
 
 let vistaAtual = 'lista';
 let tarefaEmEdicaoId = null;
@@ -41,13 +37,13 @@ function renderTarefaItem(tarefa) {
   return `
     <div class="tarefa-item prioridade-${tarefa.prioridade} ${atrasada ? 'atrasada' : ''}" data-id="${tarefa.id}">
       <div class="tarefa-info">
-        <div class="tarefa-titulo">${tarefa.titulo}</div>
+        <div class="tarefa-titulo">${escapeHtml(tarefa.titulo)}</div>
         <div class="tarefa-meta">
           <span class="tag">${ROTULOS_STATUS[tarefa.status]}</span>
           <span class="tag">${ROTULOS_SEGMENTO[tarefa.segmento]}</span>
           ${etapaTag}
           ${tarefa.prazo ? `<span>${atrasada ? '⚠️' : '📅'} ${formatarData(tarefa.prazo)}</span>` : ''}
-          ${tarefa.aguardando_de ? `<span>Aguardando: ${tarefa.aguardando_de}</span>` : ''}
+          ${tarefa.aguardando_de ? `<span>Aguardando: ${escapeHtml(tarefa.aguardando_de)}</span>` : ''}
         </div>
       </div>
       <div class="tarefa-acoes">
@@ -55,11 +51,6 @@ function renderTarefaItem(tarefa) {
       </div>
     </div>
   `;
-}
-
-function formatarData(iso) {
-  const [ano, mes, dia] = iso.split('T')[0].split('-');
-  return `${dia}/${mes}/${ano}`;
 }
 
 async function carregarResumo() {

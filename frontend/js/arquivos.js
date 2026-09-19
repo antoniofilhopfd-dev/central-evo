@@ -4,7 +4,7 @@ function renderArquivo(a) {
   return `
     <div class="tarefa-item" data-id="${a.id}">
       <div class="tarefa-info">
-        <div class="tarefa-titulo">${a.favorito ? '⭐ ' : ''}${a.nome}</div>
+        <div class="tarefa-titulo">${a.favorito ? '⭐ ' : ''}${escapeHtml(a.nome)}</div>
         <div class="tarefa-meta">
           <span class="tag">${ROTULOS_TIPO_ARQUIVO[a.tipo]}</span>
           <span class="tag">${ROTULOS_SEGMENTO[a.segmento]}</span>
@@ -12,7 +12,7 @@ function renderArquivo(a) {
         </div>
       </div>
       <div class="tarefa-acoes">
-        <a class="btn-icone" href="${a.link}" target="_blank" onclick="registrarUso(${a.id})" title="Abrir">🔗</a>
+        <a class="btn-icone" href="${escapeHtml(a.link)}" target="_blank" rel="noopener noreferrer" onclick="registrarUso(${a.id})" title="Abrir">🔗</a>
         <button class="btn-icone" onclick="abrirEdicao(${a.id})" title="Editar">✏️</button>
       </div>
     </div>

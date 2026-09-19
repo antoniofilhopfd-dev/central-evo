@@ -37,6 +37,12 @@ async function checarStatusNuvem(elId = 'ind-nuvem') {
   }
 }
 
+const MAPA_ESCAPE_HTML = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+function escapeHtml(valor) {
+  if (valor === null || valor === undefined) return '';
+  return String(valor).replace(/[&<>"']/g, (ch) => MAPA_ESCAPE_HTML[ch]);
+}
+
 function formatarData(iso) {
   if (!iso) return '';
   const [ano, mes, dia] = iso.split('T')[0].split('-');

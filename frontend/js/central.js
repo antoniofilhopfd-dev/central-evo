@@ -1,5 +1,3 @@
-const API_BASE = window.location.origin.replace(/:\d+$/, '') + ':3001/api';
-
 const SVG_ATTRS = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
 
 const ICONES = {
@@ -31,12 +29,17 @@ const APPS = [
 function renderApps() {
   const grid = document.getElementById('apps-grid');
   grid.innerHTML = APPS.map((app) => `
-    <div class="app-card ${app.href ? '' : 'desabilitado'}" ${app.href ? `onclick="window.location.href='${app.href}'"` : ''}>
+    <div class="app-card ${app.href ? '' : 'desabilitado'}" data-href="${app.href || ''}">
       <span class="icone">${app.icone}</span>
       <span class="nome">${app.nome}</span>
       ${app.href ? '' : '<span class="badge-em-construcao">em construção</span>'}
     </div>
   `).join('');
+  grid.querySelectorAll('.app-card[data-href]').forEach((card) => {
+    const href = card.dataset.href;
+    if (!href) return;
+    card.addEventListener('click', () => { window.location.href = href; });
+  });
 }
 
 async function checarStatus() {
@@ -92,7 +95,7 @@ document.getElementById('busca-global').addEventListener('input', async (e) => {
     const encontrados = tarefas.filter((t) => t.titulo.toLowerCase().includes(termo));
     resultadoEl.innerHTML = encontrados.length
       ? `<h3 style="font-size:0.85rem;margin-top:12px;">Tarefas</h3>` + encontrados.map((t) =>
-          `<div class="tarefa-item"><div class="tarefa-info"><div class="tarefa-titulo">${t.titulo}</div></div></div>`
+          `<div class="tarefa-item"><div class="tarefa-info"><div class="tarefa-titulo">${escapeHtml(t.titulo)}</div></div></div>`
         ).join('')
       : `<p style="color:var(--texto-suave)">Nenhum resultado.</p>`;
   } catch (err) {

@@ -50,7 +50,7 @@ function renderGrade() {
     html += `
       <div class="cal-dia ${foraDoMes ? 'fora-do-mes' : ''} ${iso === hojeISO ? 'hoje' : ''}" onclick="abrirDia('${iso}')">
         <div class="num">${dia.getDate()}</div>
-        ${itens.slice(0, 3).map((it) => `<div class="cal-item tipo-${it.tipo}" title="${it.titulo}">${it.titulo}</div>`).join('')}
+        ${itens.slice(0, 3).map((it) => `<div class="cal-item tipo-${it.tipo}" title="${escapeHtml(it.titulo)}">${escapeHtml(it.titulo)}</div>`).join('')}
         ${itens.length > 3 ? `<div style="font-size:0.65rem;color:var(--texto-suave)">+${itens.length - 3}</div>` : ''}
       </div>
     `;
@@ -71,7 +71,7 @@ async function abrirDia(iso) {
     ? itens.map((it) => `
       <div class="tarefa-item">
         <div class="tarefa-info">
-          <div class="tarefa-titulo">${it.titulo}</div>
+          <div class="tarefa-titulo">${escapeHtml(it.titulo)}</div>
           <div class="tarefa-meta">
             <span class="tag">${it.tipo}</span>
             <span class="tag">${ROTULOS_SEGMENTO[it.segmento] || it.segmento}</span>

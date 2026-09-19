@@ -36,13 +36,13 @@ async function carregar() {
   const partes = [];
   if (destaques.melhor_conteudo_instagram) {
     const m = destaques.melhor_conteudo_instagram;
-    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📷 Melhor conteúdo do Instagram:</strong> ${m.titulo} (${m.engajamento} engajamentos)</div>`);
+    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📷 Melhor conteúdo do Instagram:</strong> ${escapeHtml(m.titulo)} (${m.engajamento} engajamentos)</div>`);
   }
   if (destaques.campanha_em_evidencia) {
-    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📣 Campanha em evidência:</strong> ${destaques.campanha_em_evidencia.nome}</div>`);
+    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📣 Campanha em evidência:</strong> ${escapeHtml(destaques.campanha_em_evidencia.nome)}</div>`);
   }
   if (destaques.projeto_mais_avancado) {
-    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📁 Projeto mais avançado:</strong> ${destaques.projeto_mais_avancado.nome} (${destaques.projeto_mais_avancado.progresso}%)</div>`);
+    partes.push(`<div class="secao" style="margin-bottom:8px;padding:12px;"><strong>📁 Projeto mais avançado:</strong> ${escapeHtml(destaques.projeto_mais_avancado.nome)} (${destaques.projeto_mais_avancado.progresso}%)</div>`);
   }
   document.getElementById('rel-destaques').innerHTML = partes.join('') || '<p style="color:var(--texto-suave)">Sem dados suficientes ainda para destaques.</p>';
 }
