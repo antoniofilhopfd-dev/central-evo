@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquivos — Central Evolução</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca"><img class="logo" src="assets/logo/evolucao-lockup-branco.svg" alt="Colégio Evolução"><span>Central</span></div>
+  <div class="status-indicadores"><span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span></div>
+</div>
+
+<div class="container">
+  <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+  <h1>Arquivos</h1>
+
+  <section class="secao">
+    <div class="resumo-cards" id="resumo-arquivos">
+      <div class="resumo-card"><div class="numero" id="resumo-drive">0</div><div class="rotulo">Drive</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-canva">0</div><div class="rotulo">Canva</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-documentos">0</div><div class="rotulo">Documentos</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-fotos">0</div><div class="rotulo">Fotos</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-outros">0</div><div class="rotulo">Outros</div></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <h2 style="font-size:1rem;">Links importantes</h2>
+    <div id="lista-importantes" class="lista-tarefas"></div>
+  </section>
+
+  <section class="secao">
+    <div class="toolbar">
+      <button class="btn-primario" id="btn-novo">+ Novo arquivo</button>
+      <input type="text" id="busca" placeholder="Pesquisar...">
+      <select id="filtro-categoria">
+        <option value="">Categoria: Todas</option>
+        <option value="drive">Drive</option><option value="canva">Canva</option>
+        <option value="documentos">Documentos</option><option value="fotos">Fotos</option><option value="outros">Outros</option>
+      </select>
+      <select id="filtro-segmento">
+        <option value="">Segmento: Todos</option>
+        <option value="geral">Geral</option><option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option><option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+    </div>
+    <div class="lista-tarefas" id="lista-arquivos"></div>
+  </section>
+</div>
+
+<div class="modal-overlay oculto" id="modal">
+  <div class="modal">
+    <h2 id="modal-titulo">Novo arquivo</h2>
+    <input type="hidden" id="campo-id">
+    <div class="campo"><label>Nome</label><input type="text" id="campo-nome"></div>
+    <div class="campo"><label>Categoria</label>
+      <select id="campo-tipo"><option value="drive">Drive</option><option value="canva">Canva</option>
+        <option value="documentos">Documentos</option><option value="fotos">Fotos</option><option value="outros">Outros</option></select>
+    </div>
+    <div class="campo"><label>Segmento</label>
+      <select id="campo-segmento"><option value="geral">Geral</option><option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option><option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option></select>
+    </div>
+    <div class="campo"><label>Link</label><input type="text" id="campo-link"></div>
+    <div class="campo"><label>Descrição</label><textarea id="campo-descricao" rows="2"></textarea></div>
+    <div class="campo"><label>Palavras-chave</label><input type="text" id="campo-palavras-chave"></div>
+    <div class="campo"><label><input type="checkbox" id="campo-importante"> Mostrar em Links importantes</label></div>
+    <div class="campo"><label><input type="checkbox" id="campo-favorito"> Favorito</label></div>
+    <div class="modal-acoes">
+      <button class="btn-secundario" id="btn-cancelar">Cancelar</button>
+      <button class="btn-perigo oculto" id="btn-excluir">Excluir</button>
+      <button class="btn-primario" id="btn-salvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/arquivos.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatórios — Central Evolução</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
+<link rel="stylesheet" href="css/app.css">
+<style>@media print { .topbar, .toolbar, .rodape-nav { display: none !important; } }</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca"><img class="logo" src="assets/logo/evolucao-lockup-branco.svg" alt="Colégio Evolução"><span>Central</span></div>
+  <div class="status-indicadores"><span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span></div>
+</div>
+
+<div class="container">
+  <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+  <h1>Relatórios</h1>
+
+  <section class="secao">
+    <div class="toolbar">
+      <select id="filtro-periodo">
+        <option value="">Tudo</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="7">Últimos 7 dias</option>
+      </select>
+      <select id="filtro-segmento">
+        <option value="">Segmento: Todos</option>
+        <option value="geral">Geral</option><option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option><option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+      <span style="flex:1"></span>
+      <button class="btn-secundario" onclick="window.print()">Imprimir</button>
+    </div>
+  </section>
+
+  <section class="secao">
+    <h2>Tarefas</h2>
+    <div class="resumo-cards" id="rel-tarefas"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Conteúdo</h2>
+    <div class="resumo-cards" id="rel-conteudo"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Campanhas</h2>
+    <div class="resumo-cards" id="rel-campanhas"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Projetos</h2>
+    <div class="resumo-cards" id="rel-projetos"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Agenda futura</h2>
+    <div class="resumo-cards" id="rel-agenda"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Instagram</h2>
+    <div class="resumo-cards" id="rel-instagram"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Destaques</h2>
+    <div id="rel-destaques"></div>
+  </section>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/relatorios.js"></script>
+</body>
+</html>

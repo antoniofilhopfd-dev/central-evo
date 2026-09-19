@@ -7,11 +7,26 @@ Google Sheets como backend.
 
 ## Status
 
-**Etapa 1 concluída:** arquitetura ponta a ponta validada com o módulo
-**Tarefas** completo e a **Central** (shell de navegação + indicadores de
-status). Os demais 9 módulos (Agenda, Calendário, Conteúdo, Campanhas,
-Eventos, Projetos, Arquivos, Instagram, Relatórios) ainda não foram
-implementados — aparecem como "em construção" na Central.
+**Todos os 11 módulos implementados** sobre a nova arquitetura própria
+(API Node.js + PostgreSQL): Central, Agenda, Calendário, Tarefas, Conteúdo,
+Campanhas, Eventos, Projetos, Arquivos, Instagram e Relatórios.
+
+Simplificações conscientes em relação ao prompt funcional completo, a
+detalhar/expandir em etapas futuras se necessário:
+- **Instagram**: implementado cadastro de conteúdos e métricas de conta,
+  resumo, ranking por engajamento e comparação entre as duas contas. A
+  camada de "inteligência de conteúdo" mais avançada do prompt (score 0–100,
+  benchmarks por pilar/tema/horário, snapshots mensais, metas) não foi
+  construída nesta etapa.
+- **Eventos**: checklist operacional livre (JSON) existe no banco mas ainda
+  sem tela de edição — só as 4 etapas fixas (Divulgação/Foto/Vídeo/Pós-evento)
+  têm UI.
+- Falta autenticação de usuário (a API não exige login ainda).
+- O deploy real na Hostinger VPS não foi executado nesta sessão — o guia em
+  `infra/DEPLOY.md` está pronto para isso.
+
+Ainda restam: implantação de fato na VPS, autenticação e a etapa de
+migração dos dados antigos (Google Sheets/Apps Script) para o PostgreSQL.
 
 ## Estrutura
 

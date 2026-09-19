@@ -16,16 +16,16 @@ const ICONES = {
 };
 
 const APPS = [
-  { nome: 'Agenda', icone: ICONES.agenda, href: null },
-  { nome: 'Calendário', icone: ICONES.calendario, href: null },
+  { nome: 'Agenda', icone: ICONES.agenda, href: 'agenda.html' },
+  { nome: 'Calendário', icone: ICONES.calendario, href: 'calendario.html' },
   { nome: 'Tarefas', icone: ICONES.tarefas, href: 'tarefas.html' },
-  { nome: 'Conteúdo', icone: ICONES.conteudo, href: null },
-  { nome: 'Campanhas', icone: ICONES.campanhas, href: null },
-  { nome: 'Eventos', icone: ICONES.eventos, href: null },
-  { nome: 'Projetos', icone: ICONES.projetos, href: null },
-  { nome: 'Arquivos', icone: ICONES.arquivos, href: null },
-  { nome: 'Instagram', icone: ICONES.instagram, href: null },
-  { nome: 'Relatórios', icone: ICONES.relatorios, href: null },
+  { nome: 'Conteúdo', icone: ICONES.conteudo, href: 'conteudo.html' },
+  { nome: 'Campanhas', icone: ICONES.campanhas, href: 'campanhas.html' },
+  { nome: 'Eventos', icone: ICONES.eventos, href: 'eventos.html' },
+  { nome: 'Projetos', icone: ICONES.projetos, href: 'projetos.html' },
+  { nome: 'Arquivos', icone: ICONES.arquivos, href: 'arquivos.html' },
+  { nome: 'Instagram', icone: ICONES.instagram, href: 'instagram.html' },
+  { nome: 'Relatórios', icone: ICONES.relatorios, href: 'relatorios.html' },
 ];
 
 function renderApps() {
@@ -63,6 +63,22 @@ async function carregarResumoMeuDia() {
     document.getElementById('qtd-tarefas-hoje').textContent = tarefas.length;
   } catch (err) {
     document.getElementById('qtd-tarefas-hoje').textContent = '—';
+  }
+  try {
+    const r = await fetch(`${API_BASE}/agenda/periodo/hoje`);
+    const itens = await r.json();
+    document.getElementById('qtd-compromissos-hoje').textContent = itens.length;
+  } catch (err) {
+    document.getElementById('qtd-compromissos-hoje').textContent = '—';
+  }
+  try {
+    const r = await fetch(`${API_BASE}/eventos`);
+    const eventos = await r.json();
+    const hojeISO = new Date().toISOString().split('T')[0];
+    const proximos = eventos.filter((e) => e.data && e.data.split('T')[0] >= hojeISO && e.status !== 'concluido');
+    document.getElementById('qtd-eventos-proximos').textContent = proximos.length;
+  } catch (err) {
+    document.getElementById('qtd-eventos-proximos').textContent = '—';
   }
 }
 

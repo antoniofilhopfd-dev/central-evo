@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda — Central Evolução</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca">
+    <img class="logo" src="assets/logo/evolucao-lockup-branco.svg" alt="Colégio Evolução">
+    <span>Central</span>
+  </div>
+  <div class="status-indicadores"><span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span></div>
+</div>
+
+<div class="container">
+  <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+  <h1>Agenda</h1>
+
+  <section class="secao">
+    <div class="resumo-cards" id="resumo-agenda">
+      <div class="resumo-card"><div class="numero" id="resumo-compromisso">0</div><div class="rotulo">Compromissos</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-reuniao">0</div><div class="rotulo">Reuniões</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-evento">0</div><div class="rotulo">Eventos</div></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="toolbar">
+      <button class="btn-primario" id="btn-novo">+ Novo compromisso</button>
+      <select id="filtro-periodo">
+        <option value="">Período: Todos</option>
+        <option value="hoje">Hoje</option>
+        <option value="proximos">Próximos</option>
+        <option value="7dias">7 dias</option>
+        <option value="semana">Semana</option>
+      </select>
+      <select id="filtro-tipo">
+        <option value="">Tipo: Todos</option>
+        <option value="compromisso">Compromissos</option>
+        <option value="reuniao">Reuniões</option>
+        <option value="evento">Eventos</option>
+      </select>
+      <select id="filtro-segmento">
+        <option value="">Segmento: Todos</option>
+        <option value="geral">Geral</option>
+        <option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option>
+        <option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+    </div>
+    <div class="lista-tarefas" id="lista-agenda"></div>
+  </section>
+</div>
+
+<div class="modal-overlay oculto" id="modal">
+  <div class="modal">
+    <h2 id="modal-titulo">Novo compromisso</h2>
+    <input type="hidden" id="campo-id">
+    <div class="campo"><label>Título</label><input type="text" id="campo-titulo"></div>
+    <div class="campo"><label>Tipo</label>
+      <select id="campo-tipo">
+        <option value="compromisso">Compromisso</option>
+        <option value="reuniao">Reunião</option>
+        <option value="evento">Evento</option>
+      </select>
+    </div>
+    <div class="campo"><label>Data</label><input type="date" id="campo-data"></div>
+    <div class="campo"><label>Hora</label><input type="text" id="campo-hora" placeholder="HH:MM"></div>
+    <div class="campo"><label>Local</label><input type="text" id="campo-local"></div>
+    <div class="campo"><label>Segmento</label>
+      <select id="campo-segmento">
+        <option value="geral">Geral</option>
+        <option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option>
+        <option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+    </div>
+    <div class="campo oculto" id="grupo-etapa-infantil"><label>Etapa do Infantil</label>
+      <select id="campo-etapa-infantil">
+        <option value="">—</option><option value="todo_infantil">Todo Infantil</option>
+        <option value="maternal">Maternal</option><option value="jardim">Jardim</option>
+      </select>
+    </div>
+    <div class="campo"><label>Recorrência</label>
+      <select id="campo-recorrencia">
+        <option value="">Não se repete</option>
+        <option value="diaria">Diária</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option>
+      </select>
+    </div>
+    <div class="campo"><label>Observações</label><textarea id="campo-observacoes" rows="3"></textarea></div>
+    <div class="modal-acoes">
+      <button class="btn-secundario" id="btn-cancelar">Cancelar</button>
+      <button class="btn-perigo oculto" id="btn-excluir">Excluir</button>
+      <button class="btn-primario" id="btn-salvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/agenda.js"></script>
+</body>
+</html>

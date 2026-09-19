@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário — Central Evolução</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
+<link rel="stylesheet" href="css/app.css">
+<style>
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-cabecalho { font-size: 0.75rem; font-weight: 700; color: var(--texto-suave); text-align: center; padding: 4px 0; }
+  .cal-dia { background: var(--cinza-bg); border-radius: 8px; min-height: 84px; padding: 6px; font-size: 0.75rem; cursor: pointer; }
+  .cal-dia.fora-do-mes { opacity: 0.35; }
+  .cal-dia.hoje { border: 2px solid var(--laranja); }
+  .cal-dia .num { font-weight: 700; margin-bottom: 4px; }
+  .cal-item { border-radius: 4px; padding: 1px 4px; margin-bottom: 2px; font-size: 0.68rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-item.tipo-prazo { background: var(--vermelho); }
+  .cal-item.tipo-campanha { background: var(--laranja); }
+  .cal-item.tipo-evento { background: var(--azul); }
+  .cal-item.tipo-entrega { background: var(--verde); }
+  .legenda { display: flex; gap: 14px; font-size: 0.78rem; margin-top: 10px; flex-wrap: wrap; }
+  .legenda span { display: flex; align-items: center; gap: 5px; }
+  .legenda i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  @media (max-width: 800px) { .cal-grid { grid-template-columns: repeat(7, minmax(36px,1fr)); } .cal-dia { min-height: 54px; font-size: 0.65rem; } }
+  @media print { .topbar, .toolbar, .rodape-nav, .secao:not(#painel-dia) { display: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca"><img class="logo" src="assets/logo/evolucao-lockup-branco.svg" alt="Colégio Evolução"><span>Central</span></div>
+  <div class="status-indicadores"><span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span></div>
+</div>
+
+<div class="container">
+  <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+  <h1>Calendário</h1>
+
+  <section class="secao">
+    <div class="toolbar">
+      <button class="btn-secundario" id="btn-mes-anterior">&larr;</button>
+      <strong id="rotulo-mes" style="min-width:160px;text-align:center"></strong>
+      <button class="btn-secundario" id="btn-mes-seguinte">&rarr;</button>
+      <button class="btn-secundario" id="btn-hoje">Hoje</button>
+      <span style="flex:1"></span>
+      <select id="filtro-origem">
+        <option value="">Origem: Todas</option>
+        <option value="calendario">Calendário</option>
+        <option value="agenda">Agenda</option>
+        <option value="tarefas">Tarefas</option>
+        <option value="conteudo">Conteúdo</option>
+        <option value="campanhas">Campanhas</option>
+        <option value="eventos">Eventos</option>
+        <option value="projetos">Projetos</option>
+      </select>
+      <select id="filtro-tipo">
+        <option value="">Tipo: Todos</option>
+        <option value="prazo">Prazos</option>
+        <option value="campanha">Campanhas</option>
+        <option value="evento">Eventos</option>
+        <option value="entrega">Entregas</option>
+      </select>
+      <select id="filtro-segmento">
+        <option value="">Segmento: Todos</option>
+        <option value="geral">Geral</option>
+        <option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option>
+        <option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+      <button class="btn-primario" id="btn-novo-item">+ Novo prazo/entrega</button>
+    </div>
+
+    <div class="cal-grid" id="cal-cabecalho"></div>
+    <div class="cal-grid" id="cal-corpo" style="margin-top:6px;"></div>
+
+    <div class="legenda">
+      <span><i style="background:var(--vermelho)"></i> Prazo</span>
+      <span><i style="background:var(--laranja)"></i> Campanha</span>
+      <span><i style="background:var(--azul)"></i> Evento</span>
+      <span><i style="background:var(--verde)"></i> Entrega</span>
+    </div>
+  </section>
+
+  <section class="secao oculto" id="painel-dia">
+    <div class="toolbar">
+      <h2 id="titulo-dia" style="margin:0;flex:1"></h2>
+      <button class="btn-secundario" onclick="window.print()">Salvar em PDF</button>
+      <button class="btn-secundario" onclick="document.getElementById('painel-dia').classList.add('oculto')">Fechar</button>
+    </div>
+    <div class="lista-tarefas" id="lista-dia"></div>
+  </section>
+</div>
+
+<div class="modal-overlay oculto" id="modal">
+  <div class="modal">
+    <h2>Novo item de calendário</h2>
+    <div class="campo"><label>Título</label><input type="text" id="campo-titulo"></div>
+    <div class="campo"><label>Tipo</label>
+      <select id="campo-tipo"><option value="prazo">Prazo</option><option value="entrega">Entrega</option></select>
+    </div>
+    <div class="campo"><label>Segmento</label>
+      <select id="campo-segmento">
+        <option value="geral">Geral</option><option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option><option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+    </div>
+    <div class="campo"><label>Data</label><input type="date" id="campo-data"></div>
+    <div class="campo"><label>Data final (opcional)</label><input type="date" id="campo-data-fim"></div>
+    <div class="campo"><label>Observações</label><textarea id="campo-observacoes" rows="3"></textarea></div>
+    <div class="modal-acoes">
+      <button class="btn-secundario" id="btn-cancelar">Cancelar</button>
+      <button class="btn-primario" id="btn-salvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/calendario.js"></script>
+</body>
+</html>
