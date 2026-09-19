@@ -73,14 +73,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 1.1rem;
 }
 
-.topbar .marca .logo-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: conic-gradient(var(--laranja) 0 90deg, transparent 90deg 180deg, var(--laranja) 180deg 270deg, transparent 270deg 360deg);
-}
-
-.topbar .marca .evolucao { color: var(--laranja); }
+.topbar .marca img.logo { height: 34px; width: auto; display: block; }
 
 .status-indicadores {
   display: flex;
