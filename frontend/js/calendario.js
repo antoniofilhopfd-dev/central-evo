@@ -1,6 +1,6 @@
 const NOMES_MES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const ORIGEM_HREF = { agenda: 'agenda.html', tarefas: 'tarefas.html', conteudo: 'conteudo.html', campanhas: 'campanhas.html', eventos: 'eventos.html', projetos: 'projetos.html' };
+const ORIGEM_HREF = { agenda: 'agenda.html', tarefas: 'tarefas.html' };
 
 let dataAtual = new Date();
 let itensDoMes = [];

@@ -7,26 +7,21 @@ Google Sheets como backend.
 
 ## Status
 
-**Todos os 11 módulos implementados** sobre a nova arquitetura própria
-(API Node.js + PostgreSQL): Central, Agenda, Calendário, Tarefas, Conteúdo,
-Campanhas, Eventos, Projetos, Arquivos, Instagram e Relatórios.
+**5 módulos implementados** sobre a nova arquitetura própria (API Node.js +
+PostgreSQL): Central, Agenda, Calendário, Tarefas e Arquivos.
 
-Simplificações conscientes em relação ao prompt funcional completo, a
-detalhar/expandir em etapas futuras se necessário:
-- **Instagram**: implementado cadastro de conteúdos e métricas de conta,
-  resumo, ranking por engajamento e comparação entre as duas contas. A
-  camada de "inteligência de conteúdo" mais avançada do prompt (score 0–100,
-  benchmarks por pilar/tema/horário, snapshots mensais, metas) não foi
-  construída nesta etapa.
-- **Eventos**: checklist operacional livre (JSON) existe no banco mas ainda
-  sem tela de edição — só as 4 etapas fixas (Divulgação/Foto/Vídeo/Pós-evento)
-  têm UI.
+Conteúdo, Campanhas, Eventos, Projetos e Instagram foram removidos por
+decisão do usuário (não fazem parte do escopo real de uso) — código,
+telas e tabelas do banco foram excluídos (migration `010_remove_modulos.sql`).
+O Calendário e os Relatórios foram ajustados para não depender mais deles
+(agregam apenas Agenda + Tarefas).
+
+Pendências conhecidas:
 - Falta autenticação de usuário (a API não exige login ainda).
 - O deploy real na Hostinger VPS não foi executado nesta sessão — o guia em
   `infra/DEPLOY.md` está pronto para isso.
-
-Ainda restam: implantação de fato na VPS, autenticação e a etapa de
-migração dos dados antigos (Google Sheets/Apps Script) para o PostgreSQL.
+- Redesign visual em andamento para aproximar do padrão de referência do
+  usuário (pills de navegação, cores por segmento, cards de destaque).
 
 ## Estrutura
 

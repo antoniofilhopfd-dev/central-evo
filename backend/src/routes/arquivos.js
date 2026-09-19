@@ -3,7 +3,7 @@ const { createCrudRouter } = require('../crudFactory');
 
 const campos = [
   'nome', 'tipo', 'segmento', 'link', 'descricao', 'palavras_chave',
-  'importante', 'favorito', 'projeto_id', 'evento_id', 'conteudo_id',
+  'importante', 'favorito',
 ];
 const router = createCrudRouter({
   table: 'arquivos',

@@ -5,12 +5,7 @@ const { pool, APP_ENV } = require('./db');
 const tarefasRouter = require('./routes/tarefas');
 const agendaRouter = require('./routes/agenda');
 const calendarioRouter = require('./routes/calendario');
-const conteudoRouter = require('./routes/conteudo');
-const campanhasRouter = require('./routes/campanhas');
-const eventosRouter = require('./routes/eventos');
-const projetosRouter = require('./routes/projetos');
 const arquivosRouter = require('./routes/arquivos');
-const instagramRouter = require('./routes/instagram');
 const relatoriosRouter = require('./routes/relatorios');
 
 const app = express();
@@ -29,12 +24,7 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/tarefas', tarefasRouter);
 app.use('/api/agenda', agendaRouter);
 app.use('/api/calendario', calendarioRouter);
-app.use('/api/conteudos', conteudoRouter);
-app.use('/api/campanhas', campanhasRouter);
-app.use('/api/eventos', eventosRouter);
-app.use('/api/projetos', projetosRouter);
 app.use('/api/arquivos', arquivosRouter);
-app.use('/api/instagram', instagramRouter);
 app.use('/api/relatorios', relatoriosRouter);
 
 app.use((err, req, res, next) => {
