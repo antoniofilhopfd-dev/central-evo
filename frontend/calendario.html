@@ -13,14 +13,30 @@
   .cal-dia.fora-do-mes { opacity: 0.35; }
   .cal-dia.hoje { border: 2px solid var(--laranja); }
   .cal-dia .num { font-weight: 700; margin-bottom: 4px; }
-  .cal-item { border-radius: 4px; padding: 1px 4px; margin-bottom: 2px; font-size: 0.68rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cal-item.tipo-prazo { background: var(--vermelho); }
-  .cal-item.tipo-campanha { background: var(--laranja); }
-  .cal-item.tipo-evento { background: var(--azul); }
-  .cal-item.tipo-entrega { background: var(--verde); }
-  .legenda { display: flex; gap: 14px; font-size: 0.78rem; margin-top: 10px; flex-wrap: wrap; }
+  .cal-item {
+    border-radius: 4px; padding: 1px 4px 1px 6px; margin-bottom: 2px; font-size: 0.68rem; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid transparent;
+  }
+  .cal-item.tipo-prazo { border-left-color: var(--vermelho); }
+  .cal-item.tipo-evento { border-left-color: var(--azul-escuro); }
+  .cal-item.tipo-entrega { border-left-color: var(--verde); }
+  .cal-item.seg-geral { background: #64748b; }
+  .cal-item.seg-infantil { background: #ec4899; }
+  .cal-item.seg-anos_iniciais { background: #3b82f6; }
+  .cal-item.seg-anos_finais { background: #10b981; }
+  .cal-item.seg-ensino_medio { background: #8b5cf6; }
+
+  .ano-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .ano-mes { background: var(--cinza-bg); border-radius: 10px; padding: 12px; cursor: pointer; }
+  .ano-mes:hover { box-shadow: 0 4px 14px rgba(27,47,122,0.10); }
+  .ano-mes h3 { margin: 0 0 4px; font-size: 0.9rem; }
+  .ano-mes .qtd { font-size: 0.76rem; color: var(--texto-suave); }
+
+  .legenda { display: flex; gap: 12px; font-size: 0.78rem; margin-top: 10px; flex-wrap: wrap; align-items: center; }
   .legenda span { display: flex; align-items: center; gap: 5px; }
   .legenda i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .legenda .legenda-titulo { font-weight: 700; color: var(--texto-suave); margin-right: 2px; }
+
   @media (max-width: 800px) { .cal-grid { grid-template-columns: repeat(7, minmax(36px,1fr)); } .cal-dia { min-height: 54px; font-size: 0.65rem; } }
   @media print { .topbar, .toolbar, .rodape-nav, .secao:not(#painel-dia) { display: none !important; } }
 </style>
@@ -38,9 +54,18 @@
 
   <section class="secao">
     <div class="toolbar">
-      <button class="btn-secundario" id="btn-mes-anterior">&larr;</button>
-      <strong id="rotulo-mes" style="min-width:160px;text-align:center"></strong>
-      <button class="btn-secundario" id="btn-mes-seguinte">&rarr;</button>
+      <button class="btn-secundario ativo" id="btn-visao-mes">Mês</button>
+      <button class="btn-secundario" id="btn-visao-ano">Ano</button>
+      <button class="btn-secundario" id="btn-visao-lista">Lista</button>
+      <span style="flex:1"></span>
+      <input type="text" id="busca-evento" placeholder="Buscar evento...">
+      <button class="btn-secundario" id="btn-limpar-filtros">Limpar filtros</button>
+    </div>
+
+    <div class="toolbar" id="barra-navegacao">
+      <button class="btn-secundario" id="btn-anterior">&larr;</button>
+      <strong id="rotulo-periodo" style="min-width:160px;text-align:center"></strong>
+      <button class="btn-secundario" id="btn-seguinte">&rarr;</button>
       <button class="btn-secundario" id="btn-hoje">Hoje</button>
       <span style="flex:1"></span>
       <select id="filtro-origem">
@@ -66,13 +91,39 @@
       <button class="btn-primario" id="btn-novo-item">+ Novo prazo/entrega</button>
     </div>
 
-    <div class="cal-grid" id="cal-cabecalho"></div>
-    <div class="cal-grid" id="cal-corpo" style="margin-top:6px;"></div>
+    <div class="toolbar oculto" id="barra-lista-sub">
+      <button class="btn-secundario ativo" data-sub="proximos">Próximos</button>
+      <button class="btn-secundario" data-sub="todos">Todos</button>
+      <button class="btn-secundario" data-sub="passados">Passados</button>
+      <span id="contagem-lista" style="margin-left:auto;color:var(--texto-suave);font-size:0.82rem;"></span>
+    </div>
+
+    <div id="vista-mes">
+      <div class="cal-grid" id="cal-cabecalho"></div>
+      <div class="cal-grid" id="cal-corpo" style="margin-top:6px;"></div>
+    </div>
+
+    <div id="vista-ano" class="oculto">
+      <div class="ano-grid" id="ano-grid"></div>
+    </div>
+
+    <div id="vista-lista" class="oculto">
+      <div class="lista-tarefas" id="lista-eventos"></div>
+    </div>
 
     <div class="legenda">
+      <span class="legenda-titulo">Tipo:</span>
       <span><i style="background:var(--vermelho)"></i> Prazo</span>
-      <span><i style="background:var(--azul)"></i> Evento</span>
+      <span><i style="background:var(--azul-escuro)"></i> Evento</span>
       <span><i style="background:var(--verde)"></i> Entrega</span>
+    </div>
+    <div class="legenda">
+      <span class="legenda-titulo">Segmento:</span>
+      <span><i style="background:#64748b"></i> Geral</span>
+      <span><i style="background:#ec4899"></i> Infantil</span>
+      <span><i style="background:#3b82f6"></i> Anos Iniciais</span>
+      <span><i style="background:#10b981"></i> Anos Finais</span>
+      <span><i style="background:#8b5cf6"></i> Ensino Médio</span>
     </div>
   </section>
 

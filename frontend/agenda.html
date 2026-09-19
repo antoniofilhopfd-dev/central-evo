@@ -6,6 +6,24 @@
 <title>Agenda — Central Evolução</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
 <link rel="stylesheet" href="css/app.css">
+<style>
+  .hero-proximo {
+    background: var(--azul); color: #fff; border-radius: 10px; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .hero-proximo .rotulo-hero { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.75; }
+  .hero-proximo .titulo-hero { font-size: 1.05rem; font-weight: 700; margin: 2px 0; }
+  .hero-proximo .meta-hero { font-size: 0.8rem; opacity: 0.85; }
+  .barra-rapida { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .barra-rapida input[type=text] { flex: 1; min-width: 180px; }
+  .colunas-hoje { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .colunas-hoje { grid-template-columns: 1fr; } }
+  .semana-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .semana-dia { background: var(--cinza-bg); border-radius: 8px; padding: 8px; min-height: 90px; font-size: 0.78rem; }
+  .semana-dia .cab { font-weight: 700; font-size: 0.72rem; color: var(--texto-suave); text-transform: uppercase; }
+  .semana-dia .item { background: var(--azul); color: #fff; border-radius: 4px; padding: 2px 5px; margin-top: 4px; font-size: 0.68rem; }
+  @media (max-width: 800px) { .semana-grid { grid-template-columns: repeat(7, minmax(70px,1fr)); overflow-x: auto; } }
+</style>
 </head>
 <body>
 
@@ -26,12 +44,33 @@
       <div class="resumo-card"><div class="numero" id="resumo-compromisso">0</div><div class="rotulo">Compromissos</div></div>
       <div class="resumo-card"><div class="numero" id="resumo-reuniao">0</div><div class="rotulo">Reuniões</div></div>
       <div class="resumo-card"><div class="numero" id="resumo-evento">0</div><div class="rotulo">Eventos</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-total-hoje">0</div><div class="rotulo">Total hoje</div></div>
     </div>
   </section>
 
   <section class="secao">
+    <div id="hero-proximo" class="hero-proximo oculto"></div>
+
     <div class="toolbar">
-      <button class="btn-primario" id="btn-novo">+ Novo compromisso</button>
+      <button class="btn-secundario ativo" id="btn-visao-hoje">Hoje</button>
+      <button class="btn-secundario" id="btn-visao-semana">Semana</button>
+      <button class="btn-secundario" id="btn-visao-lista">Lista</button>
+      <span style="flex:1"></span>
+      <a class="btn-secundario" href="calendario.html">Abrir Calendário</a>
+      <button class="btn-primario" id="btn-novo">+ Novo</button>
+    </div>
+
+    <div class="barra-rapida">
+      <input type="text" id="rapido-titulo" placeholder="Ex.: reunião de pauta">
+      <select id="rapido-tipo">
+        <option value="compromisso">Compromisso</option>
+        <option value="reuniao">Reunião</option>
+        <option value="evento">Evento</option>
+      </select>
+      <button class="btn-secundario" id="btn-rapido-adicionar">Adicionar para hoje</button>
+    </div>
+
+    <div class="toolbar oculto" id="barra-filtros-lista">
       <select id="filtro-periodo">
         <option value="">Período: Todos</option>
         <option value="hoje">Hoje</option>
@@ -54,7 +93,32 @@
         <option value="ensino_medio">Ensino Médio</option>
       </select>
     </div>
-    <div class="lista-tarefas" id="lista-agenda"></div>
+
+    <div id="vista-hoje">
+      <div class="colunas-hoje">
+        <div>
+          <h3 style="font-size:0.9rem;">Hoje</h3>
+          <div class="lista-tarefas" id="lista-hoje"></div>
+        </div>
+        <div>
+          <h3 style="font-size:0.9rem;">Próximos 7 dias</h3>
+          <div class="lista-tarefas" id="lista-proximos"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="vista-semana" class="oculto">
+      <div class="toolbar">
+        <button class="btn-secundario" id="btn-semana-anterior">&larr;</button>
+        <strong id="rotulo-semana" style="min-width:200px;text-align:center"></strong>
+        <button class="btn-secundario" id="btn-semana-seguinte">&rarr;</button>
+      </div>
+      <div class="semana-grid" id="semana-grid"></div>
+    </div>
+
+    <div id="vista-lista" class="oculto">
+      <div class="lista-tarefas" id="lista-agenda"></div>
+    </div>
   </section>
 </div>
 

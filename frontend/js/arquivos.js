@@ -25,7 +25,19 @@ async function registrarUso(id) {
 
 async function carregarResumo() {
   const resumo = await apiGet('/arquivos/resumo');
-  for (const tipo of Object.keys(ROTULOS_TIPO_ARQUIVO)) document.getElementById(`resumo-${tipo}`).textContent = resumo[tipo] || 0;
+  let total = 0;
+  let categorias = 0;
+  for (const tipo of Object.keys(ROTULOS_TIPO_ARQUIVO)) {
+    const qtd = resumo[tipo] || 0;
+    document.getElementById(`resumo-${tipo}`).textContent = qtd;
+    total += qtd;
+    if (qtd > 0) categorias += 1;
+  }
+  document.getElementById('resumo-total').textContent = total;
+  document.getElementById('resumo-categorias').textContent = categorias;
+
+  const todos = await apiGet('/arquivos');
+  document.getElementById('resumo-favoritos').textContent = todos.filter((a) => a.favorito).length;
 }
 
 async function carregarImportantes() {
@@ -33,6 +45,13 @@ async function carregarImportantes() {
   document.getElementById('lista-importantes').innerHTML = itens.length
     ? itens.map(renderArquivo).join('')
     : '<p style="color:var(--texto-suave)">Nenhum link marcado como importante.</p>';
+}
+
+async function carregarRecentes() {
+  const itens = await apiGet('/arquivos/destaque/recentes');
+  document.getElementById('lista-recentes').innerHTML = itens.length
+    ? itens.map(renderArquivo).join('')
+    : '<p style="color:var(--texto-suave)">Nenhum arquivo cadastrado ainda.</p>';
 }
 
 async function carregarLista() {
@@ -47,6 +66,7 @@ async function carregarLista() {
     : '<p style="color:var(--texto-suave)">Nenhum arquivo encontrado.</p>';
   carregarResumo();
   carregarImportantes();
+  carregarRecentes();
 }
 
 function abrirModal(a = null) {
