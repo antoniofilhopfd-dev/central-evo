@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarefas — Central Evolução</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca">
+    <span class="logo-dot"></span>
+    <span>Colégio <span class="evolucao">evolução</span> — Central</span>
+  </div>
+  <div class="status-indicadores">
+    <span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+
+  <h1>Tarefas</h1>
+
+  <section class="secao">
+    <div class="resumo-cards" id="resumo-tarefas">
+      <div class="resumo-card"><div class="numero" id="resumo-a_fazer">0</div><div class="rotulo">A fazer</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-em_andamento">0</div><div class="rotulo">Em andamento</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-aguardando">0</div><div class="rotulo">Aguardando</div></div>
+      <div class="resumo-card"><div class="numero" id="resumo-concluida">0</div><div class="rotulo">Concluídas</div></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="toolbar">
+      <button class="btn-primario" id="btn-nova-tarefa">+ Nova tarefa</button>
+      <select id="filtro-status">
+        <option value="">Status: Todas</option>
+        <option value="a_fazer">A fazer</option>
+        <option value="em_andamento">Em andamento</option>
+        <option value="aguardando">Aguardando</option>
+        <option value="concluida">Concluídas</option>
+      </select>
+      <select id="filtro-prioridade">
+        <option value="">Prioridade: Todas</option>
+        <option value="alta">Alta</option>
+        <option value="normal">Normal</option>
+        <option value="baixa">Baixa</option>
+      </select>
+      <select id="filtro-segmento">
+        <option value="">Segmento: Todos</option>
+        <option value="geral">Geral</option>
+        <option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option>
+        <option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+      <select id="filtro-prazo">
+        <option value="">Prazo: Todos</option>
+        <option value="hoje">Hoje</option>
+        <option value="atrasadas">Atrasadas</option>
+        <option value="semana">Esta semana</option>
+        <option value="sem_prazo">Sem prazo</option>
+      </select>
+      <span style="flex:1"></span>
+      <button class="btn-secundario ativo" id="btn-vista-lista">Lista</button>
+      <button class="btn-secundario" id="btn-vista-kanban">Kanban</button>
+    </div>
+
+    <div id="vista-lista">
+      <div class="lista-tarefas" id="lista-tarefas"></div>
+    </div>
+
+    <div id="vista-kanban" class="oculto">
+      <div class="kanban">
+        <div class="kanban-coluna" data-status="a_fazer"><h3>A fazer</h3><div class="kanban-lista" id="kanban-a_fazer"></div></div>
+        <div class="kanban-coluna" data-status="em_andamento"><h3>Em andamento</h3><div class="kanban-lista" id="kanban-em_andamento"></div></div>
+        <div class="kanban-coluna" data-status="aguardando"><h3>Aguardando</h3><div class="kanban-lista" id="kanban-aguardando"></div></div>
+        <div class="kanban-coluna" data-status="concluida"><h3>Concluído</h3><div class="kanban-lista" id="kanban-concluida"></div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="modal-overlay oculto" id="modal-tarefa">
+  <div class="modal">
+    <h2 id="modal-titulo">Nova tarefa</h2>
+    <input type="hidden" id="campo-id">
+    <div class="campo">
+      <label>Título</label>
+      <input type="text" id="campo-titulo">
+    </div>
+    <div class="campo">
+      <label>Status</label>
+      <select id="campo-status">
+        <option value="a_fazer">A fazer</option>
+        <option value="em_andamento">Em andamento</option>
+        <option value="aguardando">Aguardando</option>
+        <option value="concluida">Concluída</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Prioridade</label>
+      <select id="campo-prioridade">
+        <option value="alta">Alta</option>
+        <option value="normal" selected>Normal</option>
+        <option value="baixa">Baixa</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Segmento</label>
+      <select id="campo-segmento">
+        <option value="geral">Geral</option>
+        <option value="infantil">Infantil</option>
+        <option value="anos_iniciais">Anos Iniciais</option>
+        <option value="anos_finais">Anos Finais</option>
+        <option value="ensino_medio">Ensino Médio</option>
+      </select>
+    </div>
+    <div class="campo oculto" id="grupo-etapa-infantil">
+      <label>Etapa do Infantil</label>
+      <select id="campo-etapa-infantil">
+        <option value="">—</option>
+        <option value="todo_infantil">Todo Infantil</option>
+        <option value="maternal">Maternal</option>
+        <option value="jardim">Jardim</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Prazo</label>
+      <input type="date" id="campo-prazo">
+    </div>
+    <div class="campo">
+      <label>Aguardando retorno de</label>
+      <input type="text" id="campo-aguardando-de">
+    </div>
+    <div class="campo">
+      <label>Responsável</label>
+      <input type="text" id="campo-responsavel">
+    </div>
+    <div class="campo">
+      <label>Observações</label>
+      <textarea id="campo-observacoes" rows="3"></textarea>
+    </div>
+    <div class="modal-acoes">
+      <button class="btn-secundario" id="btn-cancelar-modal">Cancelar</button>
+      <button class="btn-perigo oculto" id="btn-excluir-tarefa">Excluir</button>
+      <button class="btn-primario" id="btn-salvar-tarefa">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/tarefas.js"></script>
+</body>
+</html>

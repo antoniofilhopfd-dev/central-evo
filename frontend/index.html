@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Evolução</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marca">
+    <span class="logo-dot"></span>
+    <span>Colégio <span class="evolucao">evolução</span> — Central</span>
+  </div>
+  <div class="status-indicadores" id="status-indicadores">
+    <span><i class="bolinha" id="ind-modo"></i> Modo: <b id="txt-modo">—</b></span>
+    <span><i class="bolinha" id="ind-internet"></i> Internet</span>
+    <span><i class="bolinha" id="ind-nuvem"></i> Nuvem (API)</span>
+    <span><i class="bolinha" id="ind-pendentes"></i> Pendentes: <b id="txt-pendentes">0</b></span>
+  </div>
+</div>
+
+<div class="container">
+
+  <section class="secao">
+    <h2>Meu Dia</h2>
+    <div class="resumo-cards" id="resumo-meu-dia">
+      <div class="resumo-card"><div class="numero" id="qtd-tarefas-hoje">0</div><div class="rotulo">Tarefas de hoje</div></div>
+      <div class="resumo-card"><div class="numero" id="qtd-compromissos-hoje">—</div><div class="rotulo">Compromissos (Agenda)</div></div>
+      <div class="resumo-card"><div class="numero" id="qtd-eventos-proximos">—</div><div class="rotulo">Eventos próximos</div></div>
+      <div class="resumo-card"><div class="numero" id="qtd-pendentes-sync">0</div><div class="rotulo">Sincronizações pendentes</div></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <h2>Ações rápidas</h2>
+    <div class="toolbar">
+      <button class="btn-primario" onclick="window.location.href='tarefas.html'">+ Nova tarefa</button>
+      <button class="btn-secundario" disabled title="Módulo em construção">+ Novo evento</button>
+      <button class="btn-secundario" disabled title="Módulo em construção">+ Novo conteúdo</button>
+    </div>
+  </section>
+
+  <section class="secao">
+    <h2>Pesquisa global</h2>
+    <input type="text" id="busca-global" placeholder="Pesquisar em todos os módulos..." style="width:100%">
+    <div id="resultado-busca-global"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Aplicativos</h2>
+    <div class="apps-grid" id="apps-grid"></div>
+  </section>
+
+</div>
+
+<script src="js/central.js"></script>
+</body>
+</html>
