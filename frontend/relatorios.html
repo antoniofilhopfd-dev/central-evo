@@ -6,7 +6,18 @@
 <title>Relatórios — Central Evolução</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo/evolucao-icone-laranja.svg">
 <link rel="stylesheet" href="css/app.css">
-<style>@media print { .topbar, .toolbar, .rodape-nav { display: none !important; } }</style>
+<script src="js/vendor/xlsx.full.min.js"></script>
+<style>
+  .cabecalho-impressao { display: none; }
+  @media print {
+    .topbar, .toolbar, .rodape-nav { display: none !important; }
+    .cabecalho-impressao { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .cabecalho-impressao img { height: 32px; }
+  }
+  .campo-executivo { margin-bottom: 12px; }
+  .campo-executivo label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+  .campo-executivo textarea { width: 100%; }
+</style>
 </head>
 <body>
 
@@ -17,15 +28,27 @@
 
 <div class="container">
   <div class="rodape-nav"><a href="index.html">&larr; Voltar para a Central</a></div>
+
+  <div class="cabecalho-impressao">
+    <img src="assets/logo/evolucao-lockup-cor.svg" alt="Colégio Evolução">
+    <div>
+      <div style="font-weight:700;font-size:1.1rem;">Relatório Central Evolução</div>
+      <div id="periodo-impressao" style="font-size:0.85rem;color:#555;"></div>
+    </div>
+  </div>
+
   <h1>Relatórios</h1>
 
   <section class="secao">
     <div class="toolbar">
       <select id="filtro-periodo">
         <option value="">Tudo</option>
-        <option value="30">Últimos 30 dias</option>
         <option value="7">Últimos 7 dias</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="custom">Personalizado</option>
       </select>
+      <input type="date" id="filtro-inicio" class="oculto">
+      <input type="date" id="filtro-fim" class="oculto">
       <select id="filtro-segmento">
         <option value="">Segmento: Todos</option>
         <option value="geral">Geral</option><option value="infantil">Infantil</option>
@@ -33,6 +56,8 @@
         <option value="ensino_medio">Ensino Médio</option>
       </select>
       <span style="flex:1"></span>
+      <button class="btn-secundario" id="btn-csv">Exportar CSV</button>
+      <button class="btn-secundario" id="btn-xlsx">Exportar XLSX</button>
       <button class="btn-secundario" onclick="window.print()">Imprimir</button>
     </div>
   </section>
@@ -45,6 +70,26 @@
   <section class="secao">
     <h2>Agenda futura</h2>
     <div class="resumo-cards" id="rel-agenda"></div>
+  </section>
+
+  <section class="secao">
+    <h2>Resumo executivo</h2>
+    <div class="campo-executivo">
+      <label>Resumo executivo</label>
+      <textarea id="campo-resumo-executivo" rows="3" placeholder="Principais pontos do período..."></textarea>
+    </div>
+    <div class="campo-executivo">
+      <label>Decisões tomadas</label>
+      <textarea id="campo-decisoes" rows="2"></textarea>
+    </div>
+    <div class="campo-executivo">
+      <label>Observações</label>
+      <textarea id="campo-obs-relatorio" rows="2"></textarea>
+    </div>
+    <div class="campo-executivo">
+      <label>Próximos passos</label>
+      <textarea id="campo-proximos-passos" rows="2"></textarea>
+    </div>
   </section>
 </div>
 
