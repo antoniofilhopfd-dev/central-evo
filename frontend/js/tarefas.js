@@ -1,7 +1,7 @@
 const ROTULOS_STATUS = { a_fazer: 'A fazer', em_andamento: 'Em andamento', aguardando: 'Aguardando', concluida: 'Concluída' };
 
 let vistaAtual = 'lista';
-let tarefaEmEdicaoId = null;
+let tarefaEmEdicao = null;
 
 async function checarStatus() {
   try {
@@ -31,9 +31,19 @@ function ehAtrasada(tarefa) {
   return new Date(tarefa.prazo) < new Date(new Date().toDateString());
 }
 
+function aplicarBusca(tarefas) {
+  const termo = document.getElementById('busca-tarefa').value.trim().toLowerCase();
+  if (!termo) return tarefas;
+  return tarefas.filter((t) =>
+    t.titulo.toLowerCase().includes(termo) || (t.observacoes || '').toLowerCase().includes(termo)
+  );
+}
+
 function renderTarefaItem(tarefa) {
   const atrasada = ehAtrasada(tarefa);
   const etapaTag = tarefa.etapa_infantil ? `<span class="tag">${ROTULOS_ETAPA_INFANTIL[tarefa.etapa_infantil] || ''}</span>` : '';
+  const subConcluidas = (tarefa.subtarefas || []).filter((s) => s.concluida).length;
+  const subTotal = (tarefa.subtarefas || []).length;
   return `
     <div class="tarefa-item prioridade-${tarefa.prioridade} ${atrasada ? 'atrasada' : ''}" data-id="${tarefa.id}">
       <div class="tarefa-info">
@@ -44,6 +54,7 @@ function renderTarefaItem(tarefa) {
           ${etapaTag}
           ${tarefa.prazo ? `<span>${atrasada ? '⚠️' : '📅'} ${formatarData(tarefa.prazo)}</span>` : ''}
           ${tarefa.aguardando_de ? `<span>Aguardando: ${escapeHtml(tarefa.aguardando_de)}</span>` : ''}
+          ${subTotal > 0 ? `<span>☑️ ${subConcluidas}/${subTotal}</span>` : ''}
         </div>
       </div>
       <div class="tarefa-acoes">
@@ -62,10 +73,37 @@ async function carregarResumo() {
   }
 }
 
+async function carregarFoco() {
+  const r = await fetch(`${API_BASE}/tarefas?status=`);
+  const todas = await r.json();
+  const abertas = todas.filter((t) => t.status !== 'concluida');
+  const hero = document.getElementById('hero-foco');
+  if (abertas.length === 0) { hero.classList.add('oculto'); return; }
+  const ordemPrioridade = { alta: 0, normal: 1, baixa: 2 };
+  abertas.sort((a, b) => {
+    const pa = ordemPrioridade[a.prioridade], pb = ordemPrioridade[b.prioridade];
+    if (pa !== pb) return pa - pb;
+    if (!a.prazo) return 1;
+    if (!b.prazo) return -1;
+    return a.prazo.localeCompare(b.prazo);
+  });
+  const foco = abertas[0];
+  hero.classList.remove('oculto');
+  hero.innerHTML = `
+    <div>
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;opacity:0.75;">Foco agora</div>
+      <div style="font-size:1.05rem;font-weight:700;margin:2px 0;">${escapeHtml(foco.titulo)}</div>
+      <div style="font-size:0.8rem;opacity:0.85;">Prioridade ${foco.prioridade}${foco.prazo ? ` · prazo ${formatarData(foco.prazo)}` : ' · sem prazo'}</div>
+    </div>
+    <button class="btn-secundario" onclick="abrirEdicao(${foco.id})">Abrir tarefa</button>
+  `;
+}
+
 async function carregarTarefas() {
   const qs = montarQuery();
   const r = await fetch(`${API_BASE}/tarefas${qs ? `?${qs}` : ''}`);
-  const tarefas = await r.json();
+  let tarefas = await r.json();
+  tarefas = aplicarBusca(tarefas);
 
   if (vistaAtual === 'lista') {
     const container = document.getElementById('lista-tarefas');
@@ -90,6 +128,7 @@ async function carregarTarefas() {
     });
   }
   await carregarResumo();
+  await carregarFoco();
 }
 
 document.querySelectorAll('.kanban-coluna').forEach((coluna) => {
@@ -107,8 +146,43 @@ document.querySelectorAll('.kanban-coluna').forEach((coluna) => {
   });
 });
 
+function renderSubtarefas() {
+  const lista = document.getElementById('lista-subtarefas');
+  const subs = (tarefaEmEdicao && tarefaEmEdicao.subtarefas) || [];
+  lista.innerHTML = subs.map((s) => `
+    <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;">
+      <input type="checkbox" ${s.concluida ? 'checked' : ''} onchange="toggleSubtarefa(${s.id}, this.checked)">
+      <span style="flex:1;${s.concluida ? 'text-decoration:line-through;color:var(--texto-suave);' : ''}">${escapeHtml(s.titulo)}</span>
+      <button class="btn-icone" onclick="removerSubtarefa(${s.id})">✕</button>
+    </div>
+  `).join('') || '<p style="font-size:0.8rem;color:var(--texto-suave)">Nenhuma subtarefa ainda.</p>';
+}
+
+async function toggleSubtarefa(id, concluida) {
+  await fetch(`${API_BASE}/tarefas/subtarefas/${id}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ concluida }),
+  });
+  tarefaEmEdicao = await (await fetch(`${API_BASE}/tarefas/${tarefaEmEdicao.id}`)).json();
+  renderSubtarefas();
+}
+async function removerSubtarefa(id) {
+  await fetch(`${API_BASE}/tarefas/subtarefas/${id}`, { method: 'DELETE' });
+  tarefaEmEdicao = await (await fetch(`${API_BASE}/tarefas/${tarefaEmEdicao.id}`)).json();
+  renderSubtarefas();
+}
+document.getElementById('btn-add-subtarefa').addEventListener('click', async () => {
+  const input = document.getElementById('nova-subtarefa');
+  if (!input.value.trim()) return;
+  await fetch(`${API_BASE}/tarefas/${tarefaEmEdicao.id}/subtarefas`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: input.value.trim() }),
+  });
+  input.value = '';
+  tarefaEmEdicao = await (await fetch(`${API_BASE}/tarefas/${tarefaEmEdicao.id}`)).json();
+  renderSubtarefas();
+});
+
 function abrirModal(tarefa = null) {
-  tarefaEmEdicaoId = tarefa ? tarefa.id : null;
+  tarefaEmEdicao = tarefa;
   document.getElementById('modal-titulo').textContent = tarefa ? 'Editar tarefa' : 'Nova tarefa';
   document.getElementById('campo-id').value = tarefa ? tarefa.id : '';
   document.getElementById('campo-titulo').value = tarefa ? tarefa.titulo : '';
@@ -121,6 +195,9 @@ function abrirModal(tarefa = null) {
   document.getElementById('campo-responsavel').value = tarefa ? (tarefa.responsavel || '') : '';
   document.getElementById('campo-observacoes').value = tarefa ? (tarefa.observacoes || '') : '';
   document.getElementById('btn-excluir-tarefa').classList.toggle('oculto', !tarefa);
+  document.getElementById('btn-duplicar-tarefa').classList.toggle('oculto', !tarefa);
+  document.getElementById('grupo-subtarefas').classList.toggle('oculto', !tarefa);
+  if (tarefa) renderSubtarefas();
   atualizarVisibilidadeEtapaInfantil();
   document.getElementById('modal-tarefa').classList.remove('oculto');
 }
@@ -174,8 +251,54 @@ document.getElementById('btn-excluir-tarefa').addEventListener('click', async ()
   carregarTarefas();
 });
 
+document.getElementById('btn-duplicar-tarefa').addEventListener('click', async () => {
+  const id = document.getElementById('campo-id').value;
+  await fetch(`${API_BASE}/tarefas/${id}/duplicar`, { method: 'POST' });
+  document.getElementById('modal-tarefa').classList.add('oculto');
+  carregarTarefas();
+});
+
 ['filtro-status', 'filtro-prioridade', 'filtro-segmento', 'filtro-prazo'].forEach((id) => {
   document.getElementById(id).addEventListener('change', carregarTarefas);
+});
+document.getElementById('busca-tarefa').addEventListener('input', carregarTarefas);
+
+function marcarAba(ativa) {
+  ['aba-hoje', 'aba-semana', 'aba-todas'].forEach((id) => document.getElementById(id).classList.toggle('ativo', id === ativa));
+}
+document.getElementById('aba-hoje').addEventListener('click', () => {
+  marcarAba('aba-hoje'); document.getElementById('filtro-prazo').value = 'hoje'; carregarTarefas();
+});
+document.getElementById('aba-semana').addEventListener('click', () => {
+  marcarAba('aba-semana'); document.getElementById('filtro-prazo').value = 'semana'; carregarTarefas();
+});
+document.getElementById('aba-todas').addEventListener('click', () => {
+  marcarAba('aba-todas'); document.getElementById('filtro-prazo').value = ''; carregarTarefas();
+});
+
+document.getElementById('chip-atrasadas').addEventListener('click', () => {
+  document.getElementById('filtro-prazo').value = 'atrasadas';
+  marcarAba('');
+  carregarTarefas();
+});
+document.getElementById('chip-alta').addEventListener('click', () => {
+  document.getElementById('filtro-prioridade').value = 'alta';
+  carregarTarefas();
+});
+document.getElementById('chip-mover-hoje').addEventListener('click', async () => {
+  if (!confirm('Mover todas as tarefas atrasadas para hoje?')) return;
+  await fetch(`${API_BASE}/tarefas/lote/mover-atrasadas?para=hoje`, { method: 'PUT' });
+  carregarTarefas();
+});
+document.getElementById('chip-mover-amanha').addEventListener('click', async () => {
+  if (!confirm('Mover todas as tarefas atrasadas para amanhã?')) return;
+  await fetch(`${API_BASE}/tarefas/lote/mover-atrasadas?para=amanha`, { method: 'PUT' });
+  carregarTarefas();
+});
+document.getElementById('chip-limpar-concluidas').addEventListener('click', async () => {
+  if (!confirm('Remover as tarefas concluídas hoje? Essa ação não pode ser desfeita.')) return;
+  await fetch(`${API_BASE}/tarefas/lote/concluidas-hoje`, { method: 'DELETE' });
+  carregarTarefas();
 });
 
 document.getElementById('btn-vista-lista').addEventListener('click', () => {

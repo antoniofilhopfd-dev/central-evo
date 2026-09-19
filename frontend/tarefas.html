@@ -35,6 +35,25 @@
   </section>
 
   <section class="secao">
+    <div id="hero-foco" class="oculto" style="background:var(--azul);color:#fff;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-secundario ativo" id="aba-hoje">Hoje</button>
+      <button class="btn-secundario" id="aba-semana">Semana</button>
+      <button class="btn-secundario" id="aba-todas">Todas</button>
+      <span style="flex:1"></span>
+      <input type="text" id="busca-tarefa" placeholder="Buscar por título ou observação...">
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-secundario" id="chip-atrasadas">Ver atrasadas</button>
+      <button class="btn-secundario" id="chip-alta">Ver alta prioridade</button>
+      <button class="btn-secundario" id="chip-mover-hoje">Mover atrasadas p/ hoje</button>
+      <button class="btn-secundario" id="chip-mover-amanha">Mover atrasadas p/ amanhã</button>
+      <button class="btn-secundario" id="chip-limpar-concluidas">Limpar concluídas de hoje</button>
+    </div>
+
     <div class="toolbar">
       <button class="btn-primario" id="btn-nova-tarefa">+ Nova tarefa</button>
       <select id="filtro-status">
@@ -146,8 +165,19 @@
       <label>Observações</label>
       <textarea id="campo-observacoes" rows="3"></textarea>
     </div>
+
+    <div class="campo oculto" id="grupo-subtarefas">
+      <label>Subtarefas</label>
+      <div id="lista-subtarefas" style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;"></div>
+      <div style="display:flex;gap:6px;">
+        <input type="text" id="nova-subtarefa" placeholder="Nova subtarefa...">
+        <button class="btn-secundario" id="btn-add-subtarefa" type="button">Adicionar</button>
+      </div>
+    </div>
+
     <div class="modal-acoes">
       <button class="btn-secundario" id="btn-cancelar-modal">Cancelar</button>
+      <button class="btn-secundario oculto" id="btn-duplicar-tarefa">Duplicar</button>
       <button class="btn-perigo oculto" id="btn-excluir-tarefa">Excluir</button>
       <button class="btn-primario" id="btn-salvar-tarefa">Salvar</button>
     </div>

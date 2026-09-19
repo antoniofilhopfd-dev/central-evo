@@ -86,6 +86,35 @@ router.get('/resumo', async (req, res, next) => {
   }
 });
 
+// PUT /api/tarefas/lote/mover-atrasadas?para=hoje|amanha
+router.put('/lote/mover-atrasadas', async (req, res, next) => {
+  try {
+    const destino = req.query.para === 'amanha'
+      ? `CURRENT_DATE + INTERVAL '1 day'`
+      : `CURRENT_DATE`;
+    const { rows } = await pool.query(`
+      UPDATE tarefas SET prazo = ${destino}, atualizado_em = now()
+      WHERE prazo < CURRENT_DATE AND status <> 'concluida'
+      RETURNING id
+    `);
+    res.json({ atualizadas: rows.length });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE /api/tarefas/lote/concluidas-hoje
+router.delete('/lote/concluidas-hoje', async (req, res, next) => {
+  try {
+    const { rows } = await pool.query(`
+      DELETE FROM tarefas WHERE status = 'concluida' AND atualizado_em::date = CURRENT_DATE RETURNING id
+    `);
+    res.json({ removidas: rows.length });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/tarefas/:id
 router.get('/:id', async (req, res, next) => {
   try {
@@ -152,6 +181,23 @@ router.put('/:id/ordem', async (req, res, next) => {
     );
     if (rows.length === 0) return res.status(404).json({ erro: 'Tarefa não encontrada' });
     res.json(rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/tarefas/:id/duplicar
+router.post('/:id/duplicar', async (req, res, next) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM tarefas WHERE id = $1', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    const t = rows[0];
+    const { rows: novo } = await pool.query(
+      `INSERT INTO tarefas (titulo, status, prioridade, segmento, etapa_infantil, prazo, aguardando_de, observacoes, responsavel, recorrencia)
+       VALUES ($1, 'a_fazer', $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [`${t.titulo} (cópia)`, t.prioridade, t.segmento, t.etapa_infantil, t.prazo, t.aguardando_de, t.observacoes, t.responsavel, t.recorrencia]
+    );
+    res.status(201).json({ ...novo[0], subtarefas: [] });
   } catch (err) {
     next(err);
   }
