@@ -14,6 +14,69 @@ function chaveISO(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
+async function carregarStatusGoogle() {
+  try {
+    const status = await apiGet('/google-calendar/status');
+    const ind = document.getElementById('ind-google');
+    const txt = document.getElementById('txt-google-status');
+    const btnConectar = document.getElementById('btn-google-conectar');
+    const btnSincronizar = document.getElementById('btn-google-sincronizar');
+    const btnDesconectar = document.getElementById('btn-google-desconectar');
+
+    if (!status.configurado) {
+      ind.className = 'bolinha';
+      txt.textContent = 'não configurado no servidor';
+      btnConectar.classList.add('oculto');
+      btnSincronizar.classList.add('oculto');
+      btnDesconectar.classList.add('oculto');
+      return;
+    }
+    if (status.conectado) {
+      ind.className = 'bolinha ok';
+      txt.textContent = status.ultima_sincronizacao
+        ? `conectado — última sincronização ${new Date(status.ultima_sincronizacao).toLocaleString('pt-BR')}`
+        : 'conectado — ainda não sincronizado';
+      btnConectar.classList.add('oculto');
+      btnSincronizar.classList.remove('oculto');
+      btnDesconectar.classList.remove('oculto');
+    } else {
+      ind.className = 'bolinha alerta';
+      txt.textContent = 'não conectado';
+      btnConectar.classList.remove('oculto');
+      btnSincronizar.classList.add('oculto');
+      btnDesconectar.classList.add('oculto');
+    }
+  } catch (err) {
+    document.getElementById('ind-google').className = 'bolinha erro';
+    document.getElementById('txt-google-status').textContent = 'erro ao verificar';
+  }
+}
+
+document.getElementById('btn-google-conectar').addEventListener('click', () => {
+  window.open(`${API_BASE}/google-calendar/conectar`, '_blank');
+});
+document.getElementById('btn-google-sincronizar').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-google-sincronizar');
+  btn.disabled = true;
+  btn.textContent = 'Sincronizando...';
+  try {
+    const resultado = await apiPost('/google-calendar/sincronizar', {});
+    alert(`Sincronizado! ${resultado.importados} novo(s), ${resultado.atualizados} atualizado(s).`);
+    recarregarTudo();
+  } catch (err) {
+    alert('Erro ao sincronizar com o Google Calendário.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sincronizar agora';
+    carregarStatusGoogle();
+  }
+});
+document.getElementById('btn-google-desconectar').addEventListener('click', async () => {
+  if (!confirm('Desconectar o Google Calendário? Os eventos já importados continuam na Agenda.')) return;
+  await apiDelete('/google-calendar/desconectar');
+  carregarStatusGoogle();
+});
+
 function detectarConflitos(itens) {
   const chaves = new Map();
   for (const item of itens) {
@@ -246,3 +309,4 @@ document.getElementById('btn-semana-seguinte').addEventListener('click', () => {
 
 checarStatusNuvem();
 recarregarTudo();
+carregarStatusGoogle();

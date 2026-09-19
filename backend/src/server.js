@@ -7,6 +7,7 @@ const agendaRouter = require('./routes/agenda');
 const calendarioRouter = require('./routes/calendario');
 const arquivosRouter = require('./routes/arquivos');
 const relatoriosRouter = require('./routes/relatorios');
+const googleCalendarRouter = require('./routes/googleCalendar');
 
 const app = express();
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/api/agenda', agendaRouter);
 app.use('/api/calendario', calendarioRouter);
 app.use('/api/arquivos', arquivosRouter);
 app.use('/api/relatorios', relatoriosRouter);
+app.use('/api/google-calendar', googleCalendarRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
